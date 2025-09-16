@@ -27,27 +27,32 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   String _result = '';
 
   void _onPressed(String value) {
-    setState(() {
-      if (value == 'AC') {
-        _expression = '';
-        _result = '';
-      } else if (value == '=') {
-        try {
-          final exp = Expression.parse(
-            _expression.replaceAll('×', '*').replaceAll('÷', '/'),
-          );
-          final evaluator = const ExpressionEvaluator();
-          final context = <String, dynamic>{};
-          final evalResult = evaluator.eval(exp, context);
-          _result = '= $evalResult';
-        } catch (e) {
-          _result = '= Error';
-        }
-      } else {
-        _expression += value;
+  setState(() {
+    if (value == 'AC') {
+      _expression = '';
+      _result = '';
+    } else if (value == '=') {
+      try {
+        final exp = Expression.parse(
+          _expression.replaceAll('×', '*').replaceAll('÷', '/'),
+        );
+        final evaluator = const ExpressionEvaluator();
+        final context = <String, dynamic>{
+          'π': 3.141592653589793,
+        };
+        final evalResult = evaluator.eval(exp, context);
+        _result = '= $evalResult';
+      } catch (e) {
+        _result = '= Error';
       }
-    });
-  }
+    } else if (value == 'π') {
+      _expression += 'π';
+    } else {
+      _expression += value;
+    }
+  });
+}
+
 
   Widget _buildButton(String label, {Color? color}) {
     return Expanded(
@@ -105,7 +110,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               Row(children: ['7', '8', '9', '÷'].map(_buildButton).toList()),
               Row(children: ['4', '5', '6', '×'].map(_buildButton).toList()),
               Row(children: ['1', '2', '3', '-'].map(_buildButton).toList()),
-              Row(children: ['0', '.', '=', '+'].map(_buildButton).toList()),
+              Row(children: ['π', '0', '.', '=', '+'].map(_buildButton).toList()),
               Row(children: [_buildButton('AC', color: const Color.fromARGB(255, 19, 92, 189))]),
             ],
           ),
